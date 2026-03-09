@@ -164,6 +164,7 @@ export type Database = {
           resposta: string | null
           status: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           apartamento: string
@@ -176,6 +177,7 @@ export type Database = {
           resposta?: string | null
           status?: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           apartamento?: string
@@ -188,6 +190,7 @@ export type Database = {
           resposta?: string | null
           status?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
