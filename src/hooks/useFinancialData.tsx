@@ -35,9 +35,9 @@ export const useFinancialData = create<FinancialDataState>()(
       error: null,
       lastUpdated: null,
       autoRefreshEnabled: true,
-      
+
       setMovimentacoes: (data: MovimentacaoFinanceira[]) => {
-        set({ 
+        set({
           movimentacoes: data,
           lastUpdated: new Date().toISOString(),
           error: null
@@ -47,20 +47,20 @@ export const useFinancialData = create<FinancialDataState>()(
       setAplicacoes: (data: any[]) => {
         set({ aplicacoes: data });
       },
-      
+
       loadFromGoogleSheets: async () => {
         set({ isLoading: true, error: null });
         try {
           const data = await fetchGoogleSheetsData();
-          set({ 
+          set({
             movimentacoes: data,
             lastUpdated: new Date().toISOString(),
             isLoading: false,
             error: null
           });
         } catch (error) {
-          set({ 
-            isLoading: false, 
+          set({
+            isLoading: false,
             error: error instanceof Error ? error.message : 'Erro desconhecido'
           });
         }
@@ -71,7 +71,7 @@ export const useFinancialData = create<FinancialDataState>()(
           const { data } = await supabase
             .from('aplicacoes_financeiras')
             .select('*');
-          
+
           if (data) {
             set({ aplicacoes: data });
           }
@@ -102,13 +102,13 @@ export const useFinancialData = create<FinancialDataState>()(
           supabase.removeChannel(aplicacoesChannel);
         };
       },
-      
+
       addMovimentacao: (movimentacao: MovimentacaoFinanceira) => {
-        set(state => ({ 
-          movimentacoes: [...state.movimentacoes, movimentacao] 
+        set(state => ({
+          movimentacoes: [...state.movimentacoes, movimentacao]
         }));
       },
-      
+
       updateMovimentacao: (index: number, movimentacao: MovimentacaoFinanceira) => {
         set(state => {
           const newMovimentacoes = [...state.movimentacoes];
@@ -116,36 +116,36 @@ export const useFinancialData = create<FinancialDataState>()(
           return { movimentacoes: newMovimentacoes };
         });
       },
-      
+
       deleteMovimentacao: (index: number) => {
         set(state => ({
           movimentacoes: state.movimentacoes.filter((_, i) => i !== index)
         }));
       },
-      
+
       getResumoFinanceiro: (): ResumoFinanceiro => {
         const { movimentacoes, aplicacoes } = get();
         const totalReceitas = movimentacoes
           .filter(m => m.ValorMov > 0)
           .reduce((sum, m) => sum + m.ValorMov, 0);
-        
+
         const totalDespesas = movimentacoes
           .filter(m => m.ValorMov < 0)
           .reduce((sum, m) => sum + Math.abs(m.ValorMov), 0);
-        
+
         // Calcular fundos baseados nas aplicações financeiras
         const fundoReserva = aplicacoes
           .filter(app => app.nome_aplicacao.toLowerCase().includes('reserva'))
           .reduce((total, app) => total + app.valor_aplicacao + app.valor_rendimento, 0);
-        
+
         const fundoReforma = aplicacoes
           .filter(app => app.nome_aplicacao.toLowerCase().includes('reforma'))
           .reduce((total, app) => total + app.valor_aplicacao + app.valor_rendimento, 0);
-        
+
         // Cálculo do saldo atual: saldo anterior + total receita - total despesa - fundo reserva - fundo reforma
         const saldoAnterior = 0; // TODO: implementar lógica para saldo anterior
         const saldoAtual = saldoAnterior + totalReceitas - totalDespesas - fundoReserva - fundoReforma;
-        
+
         const categoriasMap = new Map();
         movimentacoes.forEach(m => {
           const categoria = m.IdBaseCategoria;
@@ -158,14 +158,14 @@ export const useFinancialData = create<FinancialDataState>()(
             count: current.count + 1
           });
         });
-        
+
         const movimentacoesPorCategoria = Array.from(categoriasMap.entries())
           .map(([categoria, data]) => ({
             categoria,
             valor: data.valor,
             count: data.count
           }));
-        
+
         return {
           saldoAnterior,
           totalReceitas,
@@ -176,7 +176,7 @@ export const useFinancialData = create<FinancialDataState>()(
           movimentacoesPorCategoria
         };
       },
-      
+
       getMovimentacoesFiltradas: (filtros: FiltroMovimentacao): MovimentacaoFinanceira[] => {
         const { movimentacoes } = get();
         return movimentacoes.filter(m => {
@@ -188,28 +188,25 @@ export const useFinancialData = create<FinancialDataState>()(
           return true;
         });
       },
-      
+
       clearData: () => {
         set({ movimentacoes: [] });
       },
 
       startAutoRefresh: () => {
-        console.log('🔄 Iniciando auto-refresh do Google Sheets...');
-        
         // Função para verificar se há mudanças nos dados
         const checkForUpdates = async () => {
           const state = get();
           if (!state.autoRefreshEnabled) return;
-          
+
           try {
             const data = await fetchGoogleSheetsData();
             const currentDataString = JSON.stringify(state.movimentacoes);
             const newDataString = JSON.stringify(data);
-            
+
             // Só atualiza se houver mudanças nos dados
             if (currentDataString !== newDataString) {
-              console.log('✅ Novos dados detectados no Google Sheets, atualizando...');
-              set({ 
+              set({
                 movimentacoes: data,
                 lastUpdated: new Date().toISOString(),
                 error: null
@@ -219,22 +216,20 @@ export const useFinancialData = create<FinancialDataState>()(
             console.error('❌ Erro ao verificar atualizações:', error);
           }
         };
-        
+
         // Verificar atualizações a cada 30 segundos
         const intervalId = setInterval(checkForUpdates, 30000);
-        
+
         // Fazer primeira verificação após 5 segundos
         setTimeout(checkForUpdates, 5000);
-        
+
         return () => {
-          console.log('🛑 Parando auto-refresh do Google Sheets');
           clearInterval(intervalId);
         };
       },
 
       toggleAutoRefresh: (enabled: boolean) => {
         set({ autoRefreshEnabled: enabled });
-        console.log(`Auto-refresh ${enabled ? 'ativado' : 'desativado'}`);
       }
     }),
     {

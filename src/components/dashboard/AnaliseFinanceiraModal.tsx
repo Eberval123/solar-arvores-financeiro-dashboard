@@ -83,8 +83,7 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
       setShowUploadForm(false);
       toast.success('Análise enviada com sucesso!');
     } catch (error) {
-      console.error('Error uploading:', error);
-      toast.error('Erro ao enviar análise. Verifique o console para mais detalhes.');
+      toast.error('Erro ao enviar análise. Por favor, tente novamente ou contate o suporte.');
     }
   };
 

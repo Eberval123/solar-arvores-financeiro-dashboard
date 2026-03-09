@@ -11,17 +11,14 @@ export const fetchGoogleSheetsData = async () => {
   try {
     // URL pública para CSV da planilha
     const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
-    
-    console.log('Fetching data from:', csvUrl);
-    
+
     const response = await fetch(csvUrl);
     if (!response.ok) {
       throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
     }
-    
+
     const csvText = await response.text();
-    console.log('CSV raw data:', csvText.substring(0, 500) + '...');
-    
+
     return parseCSVToMovimentacoes(csvText);
   } catch (error) {
     console.error('Erro ao conectar com Google Sheets:', error);
@@ -31,21 +28,21 @@ export const fetchGoogleSheetsData = async () => {
 
 const parseCSVToMovimentacoes = (csvText: string) => {
   const lines = csvText.split('\n').filter(line => line.trim() !== '');
-  
+
   if (lines.length === 0) {
     throw new Error('Planilha vazia ou não encontrada');
   }
-  
+
   // Parse CSV mais robusto
   const parseCSVLine = (line: string): string[] => {
     const result = [];
     let current = '';
     let inQuotes = false;
     let i = 0;
-    
+
     while (i < line.length) {
       const char = line[i];
-      
+
       if (char === '"') {
         if (inQuotes && line[i + 1] === '"') {
           // Escaped quote
@@ -65,7 +62,7 @@ const parseCSVToMovimentacoes = (csvText: string) => {
         i++;
       }
     }
-    
+
     result.push(current.trim());
     return result;
   };
@@ -76,18 +73,16 @@ const parseCSVToMovimentacoes = (csvText: string) => {
     const random = Math.random().toString(36).substr(2, 5);
     return `${timestamp}_${index}_${random}`;
   };
-  
+
   const headers = parseCSVLine(lines[0]).map(h => h.replace(/"/g, '').trim());
-  console.log('Headers encontrados:', headers);
-  
+
   const movimentacoes = [];
-  
+
   for (let i = 1; i < lines.length; i++) {
     if (lines[i].trim() === '') continue;
-    
+
     const values = parseCSVLine(lines[i]).map(v => v.replace(/"/g, '').trim());
-    console.log(`Linha ${i} valores brutos:`, values);
-    
+
     // Mapear colunas corretamente baseado na estrutura da planilha
     // Ordem: id, IdBaseMovimentacao, IdBaseCategoria, DescricaoMovimentacao, DataMovimentacao, ValorMov, Status, MesRef
     const movimentacao = {
@@ -100,39 +95,34 @@ const parseCSVToMovimentacoes = (csvText: string) => {
       Status: values[6] || 'Pendente',
       MesRef: values[7] || getMonthFromDate(values[4] || '')
     };
-    
-    console.log('Movimentação processada:', movimentacao);
-    
+
     // Verificar se não é apenas o cabeçalho ou linha vazia
     if (values[1] && values[1] !== 'IdBaseMovimentacao' && values[1].trim() !== '') {
       movimentacoes.push(movimentacao);
     }
   }
-  
-  console.log('Total de movimentações processadas:', movimentacoes.length);
+
   return movimentacoes;
 };
 
 const parseValue = (valueStr: string): number => {
   if (!valueStr || valueStr.trim() === '') return 0;
-  
-  console.log('Parsing value:', valueStr);
-  
+
   let cleanValue = valueStr.trim();
-  
+
   // Detectar se é negativo
   const isNegative = cleanValue.includes('-') || cleanValue.startsWith('(');
-  
+
   // Remover prefixos como "R$", "-R$", símbolos de moeda
   cleanValue = cleanValue.replace(/^[-]?R?\$?\s*/, '');
   cleanValue = cleanValue.replace(/[()]/g, ''); // Remover parênteses
-  
+
   // Tratar formato brasileiro: "1.305,00" onde ponto é separador de milhares e vírgula é decimal
   // Se há vírgula e ela está nas últimas 3 posições, é separador decimal
   if (cleanValue.includes(',')) {
     const commaIndex = cleanValue.lastIndexOf(',');
     const afterComma = cleanValue.substring(commaIndex + 1);
-    
+
     // Se após a vírgula há 2 dígitos ou menos, é separador decimal
     if (afterComma.length <= 2 && /^\d+$/.test(afterComma)) {
       // Remover pontos (separadores de milhares) e substituir vírgula por ponto
@@ -142,33 +132,30 @@ const parseValue = (valueStr: string): number => {
       cleanValue = cleanValue.replace(/[,]/g, '');
     }
   }
-  
+
   // Remove caracteres não numéricos exceto ponto e sinal negativo
   const numericValue = cleanValue.replace(/[^\d.-]/g, '');
-  
+
   const parsed = parseFloat(numericValue);
   const result = isNaN(parsed) ? 0 : (isNegative ? -Math.abs(parsed) : parsed);
-  
-  console.log(`"${valueStr}" -> ${result}`);
+
   return result;
 };
 
 const formatDate = (dateStr: string): string => {
   if (!dateStr) return new Date().toISOString().split('T')[0];
-  
-  console.log('Formatando data:', dateStr);
-  
+
   // Se já está no formato YYYY-MM-DD
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
     return dateStr;
   }
-  
+
   // Se está no formato DD/MM/YYYY
   if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateStr)) {
     const [day, month, year] = dateStr.split('/');
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   }
-  
+
   // Tentar parse direto
   try {
     const date = new Date(dateStr);
@@ -178,13 +165,13 @@ const formatDate = (dateStr: string): string => {
   } catch (e) {
     console.error('Erro ao formatar data:', e);
   }
-  
+
   return new Date().toISOString().split('T')[0];
 };
 
 const getMonthFromDate = (dateStr: string): string => {
   if (!dateStr) return new Date().toISOString().substring(0, 7);
-  
+
   try {
     const date = new Date(formatDate(dateStr));
     return date.toISOString().substring(0, 7);

@@ -26,7 +26,6 @@ const Dashboard = () => {
   const resumo = getResumoFinanceiro();
 
   useEffect(() => {
-    console.log('Dashboard montado, carregando dados...');
     // Carregar dados automaticamente na primeira visita
     if (movimentacoes.length === 0 && !error) {
       loadFromGoogleSheets();
@@ -47,7 +46,6 @@ const Dashboard = () => {
   }, [startAutoRefresh]);
 
   const handleRefresh = () => {
-    console.log('Recarregando dados...');
     loadFromGoogleSheets();
     loadAplicacoes();
   };
@@ -56,12 +54,7 @@ const Dashboard = () => {
     const date = new Date(dateStr);
     return date.toLocaleString('pt-BR');
   };
-  console.log('Dashboard render:', {
-    movimentacoes: movimentacoes.length,
-    isLoading,
-    error,
-    lastUpdated
-  });
+
   if (error) {
     return <div className="space-y-6">
       {/* Status da Conexão */}

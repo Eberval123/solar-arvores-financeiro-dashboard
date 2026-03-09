@@ -22,7 +22,7 @@ export const useAnaliseFinanceira = () => {
   const fetchAnalises = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const { data, error: fetchError } = await supabase
         .from('analises_financeiras')
@@ -45,14 +45,10 @@ export const useAnaliseFinanceira = () => {
 
   const uploadPDF = async (periodo: string, file: File) => {
     try {
-      console.log('Iniciando upload do PDF:', { periodo, fileName: file.name, fileSize: file.size });
-      
       const fileExt = file.name.split('.').pop();
       const fileName = `${periodo.replace(/\//g, '-').replace(/\s+/g, '_')}-${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      console.log('Fazendo upload para storage:', filePath);
-      
       // Upload file to storage
       const { error: uploadError } = await supabase.storage
         .from('analises-financeiras')
@@ -63,10 +59,7 @@ export const useAnaliseFinanceira = () => {
         throw uploadError;
       }
 
-      console.log('Upload para storage concluído com sucesso');
-
       // Save to database
-      console.log('Inserindo registro no banco de dados...');
       const { error: insertError } = await supabase
         .from('analises_financeiras')
         .insert({
@@ -86,7 +79,6 @@ export const useAnaliseFinanceira = () => {
         throw insertError;
       }
 
-      console.log('Análise salva com sucesso no banco de dados');
       await fetchAnalises();
     } catch (err) {
       console.error('Erro completo no upload:', err);

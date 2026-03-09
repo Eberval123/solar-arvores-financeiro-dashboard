@@ -44,8 +44,6 @@ export const useSupabaseAuth = () => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event);
-
         if (session?.user) {
           // Defer role check to avoid blocking
           setTimeout(async () => {
