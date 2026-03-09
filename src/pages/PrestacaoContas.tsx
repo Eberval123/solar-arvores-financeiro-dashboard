@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import { Navigate } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useCurrentMorador } from '@/hooks/useCurrentMorador';
 
 interface PrestacaoContas {
   id: string;
@@ -32,7 +33,7 @@ interface Duvida {
 }
 
 const PrestacaoContas = () => {
-  const { canAccessPrestacaoContas, isLoading: authLoading } = useSupabaseAuth();
+  const { user, canAccessPrestacaoContas, isLoading: authLoading } = useSupabaseAuth();
   const [prestacoes, setPrestacoes] = useState<PrestacaoContas[]>([]);
   const [filteredPrestacoes, setFilteredPrestacoes] = useState<PrestacaoContas[]>([]);
   const [selectedMes, setSelectedMes] = useState<string>('');
@@ -41,6 +42,7 @@ const PrestacaoContas = () => {
   const [duvidas, setDuvidas] = useState<Duvida[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { morador, isLoading: moradorLoading } = useCurrentMorador();
   const { toast } = useToast();
 
   // Verificação de acesso
@@ -216,8 +218,10 @@ const PrestacaoContas = () => {
         .from('duvidas_sindico' as any)
         .insert({
           pergunta: duvida.trim(),
-          morador_nome: 'Morador', // TODO: pegar do contexto do usuário logado
-          apartamento: '101', // TODO: pegar do contexto do usuário logado
+          morador_nome: morador?.nome || 'Morador',
+          apartamento: morador?.apartamento || 'N/A',
+          bloco: morador?.bloco || null,
+          user_id: user?.id,
           status: 'pendente'
         } as any);
 
@@ -225,7 +229,7 @@ const PrestacaoContas = () => {
 
       setDuvida('');
       loadDuvidas();
-      
+
       toast({
         title: "Dúvida enviada",
         description: "Sua dúvida foi enviada ao síndico com sucesso.",
@@ -300,8 +304,8 @@ const PrestacaoContas = () => {
               </Select>
             </div>
 
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={clearFilters}
               disabled={!selectedMes && !selectedAno}
             >
@@ -328,7 +332,7 @@ const PrestacaoContas = () => {
             <div className="text-center py-8">
               <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">
-                {selectedMes || selectedAno 
+                {selectedMes || selectedAno
                   ? "Nenhuma prestação de contas encontrada para os filtros selecionados."
                   : "Nenhuma prestação de contas disponível."
                 }
@@ -350,7 +354,7 @@ const PrestacaoContas = () => {
                       </div>
                       <Badge variant="secondary">PDF</Badge>
                     </div>
-                    
+
                     <div className="flex gap-2">
                       <Button
                         size="sm"
@@ -399,8 +403,8 @@ const PrestacaoContas = () => {
               className="resize-none"
             />
           </div>
-          
-          <Button 
+
+          <Button
             onClick={handleEnviarDuvida}
             disabled={isSubmitting || !duvida.trim()}
             className="w-full md:w-auto"
