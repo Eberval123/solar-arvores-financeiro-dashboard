@@ -44,7 +44,7 @@ const ExtratosModal = ({ open, onOpenChange }: ExtratosModalProps) => {
         .order('mes_referencia', { ascending: false });
 
       if (error) throw error;
-      
+
       setExtratos(data || []);
     } catch (error) {
       console.error('Erro ao carregar extratos:', error);
@@ -120,7 +120,7 @@ const ExtratosModal = ({ open, onOpenChange }: ExtratosModalProps) => {
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-4 sm:p-6">
           <DialogHeader className="flex-shrink-0">
             <DialogTitle className="flex items-center gap-2 text-lg sm:text-xl">
               <FileText className="w-5 h-5" />
@@ -130,7 +130,7 @@ const ExtratosModal = ({ open, onOpenChange }: ExtratosModalProps) => {
               Visualize e faça download dos extratos bancários cadastrados no sistema.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="overflow-y-auto flex-1 -mx-6 px-6 sm:mx-0 sm:px-0">
             {isLoading ? (
               <div className="text-center py-8">

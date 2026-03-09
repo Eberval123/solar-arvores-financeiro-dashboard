@@ -136,7 +136,7 @@ const LoginPage = () => {
             )}
           </div>
           <div>
-            <CardTitle className="text-2xl font-bold text-gray-800">
+            <CardTitle className="text-xl sm:text-2xl font-bold text-gray-800">
               {isSignupMode ? 'Criar Conta' : 'Acesso ao Sistema'}
             </CardTitle>
             <CardDescription className="text-gray-600 mt-2">

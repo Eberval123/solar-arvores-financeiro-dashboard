@@ -151,7 +151,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={({ isActive }) =>
                         cn(
-                          "group flex items-center px-3 py-2 text-base font-medium rounded-sm transition-all duration-300 hover:translate-x-1",
+                          "group flex items-center px-3 py-3 text-base font-medium rounded-sm transition-all duration-300 hover:translate-x-1",
                           isActive
                             ? "bg-emerald-800 text-white shadow-md"
                             : "text-gray-700 hover:bg-emerald-50 hover:text-emerald-900"
@@ -177,7 +177,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
                     <Link
                       to="/install"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="group flex items-center px-3 py-2 text-base font-medium rounded-md text-gray-700 hover:bg-gray-100"
+                      className="group flex items-center px-3 py-3 text-base font-medium rounded-md text-gray-700 hover:bg-gray-100"
                     >
                       <Smartphone className="mr-4 flex-shrink-0 h-6 w-6 text-gray-400" />
                       Instalar App
