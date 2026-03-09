@@ -126,11 +126,11 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           <DialogHeader className="border-b pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <DialogTitle className="text-xl sm:text-2xl font-bold font-montserrat">Análises Financeiras</DialogTitle>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                  Visualize e gerencie as análises financeiras do condomínio
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <DialogTitle className="text-lg sm:text-2xl font-bold font-montserrat truncate">Análises Financeiras</DialogTitle>
+                <p className="text-[10px] sm:text-sm text-muted-foreground mt-0.5 sm:mt-1 truncate">
+                  Gerencie as análises do condomínio
                 </p>
               </div>
               {isAdmin && (
@@ -138,7 +138,7 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
                   variant="outline"
                   size="sm"
                   onClick={() => setShowUploadForm(!showUploadForm)}
-                  className="flex-shrink-0"
+                  className="flex-shrink-0 h-8 sm:h-9"
                 >
                   <Upload className="h-4 w-4 sm:mr-2" />
                   <span className="hidden sm:inline">Nova Análise</span>
@@ -153,7 +153,7 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
                 <div className="space-y-4">
                   <h3 className="font-semibold">Enviar Nova Análise</h3>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Data Início</label>
                       <Popover>
@@ -233,12 +233,12 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
                     )}
                   </div>
 
-                  <div className="flex gap-2">
-                    <Button onClick={handleUpload} disabled={!selectedFile || !startDate || !endDate}>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button onClick={handleUpload} disabled={!selectedFile || !startDate || !endDate} className="w-full sm:w-auto">
                       <Upload className="h-4 w-4 mr-2" />
                       Enviar Análise
                     </Button>
-                    <Button variant="outline" onClick={() => {
+                    <Button variant="outline" className="w-full sm:w-auto" onClick={() => {
                       setShowUploadForm(false);
                       setSelectedFile(null);
                       setStartDate(undefined);
@@ -271,46 +271,57 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
               <div className="grid gap-4">
                 {analises.map((analise) => (
                   <Card key={analise.id} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between gap-4">
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-2">
-                            <FileText className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                            <h3 className="font-semibold text-sm sm:text-base break-words">
+                          <div className="flex items-start gap-2 mb-3">
+                            <div className="bg-primary/10 p-2 rounded-lg flex-shrink-0">
+                              <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                            </div>
+                            <h3 className="font-semibold text-sm sm:text-base leading-tight break-words pt-1">
                               {analise.nome_arquivo || `Análise ${analise.periodo}`}
                             </h3>
                           </div>
 
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
-                            <div className="flex items-center gap-1 min-w-0">
-                              <CalendarIcon className="h-4 w-4 flex-shrink-0" />
+                          <div className="grid grid-cols-1 xs:grid-cols-2 lg:flex lg:items-center gap-2 sm:gap-4 text-[11px] sm:text-sm text-muted-foreground">
+                            <div className="flex items-center gap-1.5 bg-muted/50 px-2 py-1 rounded sm:bg-transparent sm:p-0">
+                              <CalendarIcon className="h-3.5 w-3.5 flex-shrink-0" />
                               <span className="truncate">Período: {analise.periodo}</span>
                             </div>
                             {analise.tamanho_arquivo && (
-                              <span>Tamanho: {formatFileSize(analise.tamanho_arquivo)}</span>
+                              <div className="flex items-center gap-1.5 bg-muted/50 px-2 py-1 rounded sm:bg-transparent sm:p-0">
+                                <span className="sm:hidden">•</span>
+                                <span>{formatFileSize(analise.tamanho_arquivo)}</span>
+                              </div>
                             )}
-                            <span>
-                              Criado em: {new Date(analise.data_criacao).toLocaleDateString('pt-BR')}
-                            </span>
+                            <div className="flex items-center gap-1.5 sm:hidden opacity-70">
+                              <span>Criado em: {new Date(analise.data_criacao).toLocaleDateString('pt-BR')}</span>
+                            </div>
                           </div>
                         </div>
 
-                        <div className="flex gap-2 flex-shrink-0">
+                        <div className="flex items-center justify-end gap-2 pt-2 sm:pt-0 border-t sm:border-0 mt-2 sm:mt-0">
                           {analise.url_arquivo && (
                             <>
                               <Button
                                 variant="default"
                                 size="sm"
+                                className="h-9 w-full sm:w-9 sm:p-0"
                                 onClick={() => handleDownload(analise.nome_arquivo || 'analise.pdf', analise.url_arquivo!)}
+                                title="Baixar"
                               >
-                                <Download className="h-4 w-4" />
+                                <Download className="h-4 w-4 mr-2 sm:mr-0" />
+                                <span className="sm:hidden">Baixar</span>
                               </Button>
                               <Button
                                 variant="outline"
                                 size="sm"
+                                className="h-9 w-full sm:w-9 sm:p-0"
                                 onClick={() => handleViewPdf(analise.url_arquivo!, analise.nome_arquivo || 'analise.pdf')}
+                                title="Visualizar"
                               >
-                                <Eye className="h-4 w-4" />
+                                <Eye className="h-4 w-4 mr-2 sm:mr-0" />
+                                <span className="sm:hidden">Ver</span>
                               </Button>
                             </>
                           )}
@@ -318,9 +329,12 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
                             <Button
                               variant="destructive"
                               size="sm"
+                              className="h-9 w-full sm:w-9 sm:p-0"
                               onClick={() => handleDelete(analise.id, analise.url_arquivo)}
+                              title="Excluir"
                             >
-                              <X className="h-4 w-4" />
+                              <X className="h-4 w-4 mr-2 sm:mr-0" />
+                              <span className="sm:hidden">Excluir</span>
                             </Button>
                           )}
                         </div>

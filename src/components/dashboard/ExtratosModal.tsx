@@ -120,18 +120,22 @@ const ExtratosModal = ({ open, onOpenChange }: ExtratosModalProps) => {
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-4 sm:p-6">
-          <DialogHeader className="flex-shrink-0">
-            <DialogTitle className="flex items-center gap-2 text-base sm:text-xl">
-              <FileText className="w-5 h-5 text-primary flex-shrink-0" />
-              Extratos Cadastrados
-            </DialogTitle>
-            <DialogDescription className="text-xs sm:text-sm">
-              Visualize e gerencie os extratos bancários do sistema.
-            </DialogDescription>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0 sm:p-6">
+          <DialogHeader className="p-4 sm:p-0 border-b sm:border-0 flex-shrink-0">
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0">
+                <DialogTitle className="flex items-center gap-2 text-base sm:text-xl font-bold">
+                  <FileText className="w-5 h-5 text-primary flex-shrink-0" />
+                  <span className="truncate">Extratos Bancários</span>
+                </DialogTitle>
+                <DialogDescription className="text-[10px] sm:text-sm truncate">
+                  Histórico de movimentações por período
+                </DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
 
-          <div className="overflow-y-auto overflow-x-hidden flex-1 -mx-4 px-4 sm:mx-0 sm:px-0 mt-2">
+          <div className="overflow-y-auto overflow-x-hidden flex-1 p-4 sm:p-0">
             {isLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
@@ -169,24 +173,24 @@ const ExtratosModal = ({ open, onOpenChange }: ExtratosModalProps) => {
                             </p>
                           </div>
                         </div>
-                        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                        <div className="flex flex-row sm:flex-row gap-2 w-full sm:w-auto mt-2 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-0">
                           <Button
                             onClick={() => handleDownload(extrato)}
                             variant="default"
                             size="sm"
-                            className="flex items-center justify-center gap-2 w-full sm:w-auto"
+                            className="flex-1 sm:flex-none h-9 text-xs"
                           >
-                            <Download className="w-4 h-4" />
+                            <Download className="w-4 h-4 mr-1 sm:mr-2" />
                             Baixar
                           </Button>
                           <Button
                             onClick={() => handleViewPdf(extrato)}
                             variant="outline"
                             size="sm"
-                            className="flex items-center justify-center gap-2 w-full sm:w-auto"
+                            className="flex-1 sm:flex-none h-9 text-xs"
                           >
-                            <Eye className="w-4 h-4" />
-                            Visualizar
+                            <Eye className="w-4 h-4 mr-1 sm:mr-2" />
+                            Ver
                           </Button>
                         </div>
                       </div>
