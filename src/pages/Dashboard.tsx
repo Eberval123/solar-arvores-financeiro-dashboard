@@ -163,24 +163,24 @@ const Dashboard = () => {
     {/* Cards de Resumo */}
     <ResumoCards resumo={resumo} />
 
+    {/* Botões de Ação reposicionados para maior destaque */}
+    <div className="flex flex-col sm:flex-row justify-center gap-4 py-2">
+      <Button onClick={() => setAnaliseModalOpen(true)} className="flex items-center gap-2 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold px-6 py-4 rounded-sm shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto">
+        <BarChart className="w-5 h-5" />
+        Análise Financeira
+      </Button>
+
+      <Button onClick={() => setExtratosModalOpen(true)} variant="outline" className="flex items-center gap-2 border-emerald-800/20 text-emerald-900 hover:bg-emerald-50 font-semibold px-6 py-4 rounded-sm hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto">
+        <FileText className="w-4 h-4" />
+        Ver Extratos Cadastrados
+      </Button>
+    </div>
+
     {/* Gráficos */}
     <ChartsSection movimentacoes={movimentacoes} />
 
     {/* Tabela Resumo Financeiro */}
     <FinancialSummaryTable />
-
-    {/* Botões de Ação */}
-    <div className="flex flex-col sm:flex-row justify-center gap-4">
-      <Button onClick={() => setAnaliseModalOpen(true)} className="flex items-center gap-2 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold px-6 py-3 rounded-sm shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-        <BarChart className="w-5 h-5" />
-        Análise Financeira
-      </Button>
-
-      <Button onClick={() => setExtratosModalOpen(true)} variant="outline" className="flex items-center gap-2 border-emerald-800/20 text-emerald-900 hover:bg-emerald-50 rounded-sm hover:-translate-y-1 transition-all duration-300">
-        <FileText className="w-4 h-4" />
-        Ver Extratos Cadastrados
-      </Button>
-    </div>
 
     {/* Modais */}
     <ExtratosModal open={extratosModalOpen} onOpenChange={setExtratosModalOpen} />
