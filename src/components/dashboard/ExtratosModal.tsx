@@ -122,16 +122,16 @@ const ExtratosModal = ({ open, onOpenChange }: ExtratosModalProps) => {
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-4 sm:p-6">
           <DialogHeader className="flex-shrink-0">
-            <DialogTitle className="flex items-center gap-2 text-lg sm:text-xl">
-              <FileText className="w-5 h-5" />
+            <DialogTitle className="flex items-center gap-2 text-base sm:text-xl">
+              <FileText className="w-5 h-5 text-primary flex-shrink-0" />
               Extratos Cadastrados
             </DialogTitle>
-            <DialogDescription className="text-sm">
-              Visualize e faça download dos extratos bancários cadastrados no sistema.
+            <DialogDescription className="text-xs sm:text-sm">
+              Visualize e gerencie os extratos bancários do sistema.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="overflow-y-auto flex-1 -mx-6 px-6 sm:mx-0 sm:px-0">
+          <div className="overflow-y-auto overflow-x-hidden flex-1 -mx-4 px-4 sm:mx-0 sm:px-0 mt-2">
             {isLoading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
@@ -158,10 +158,10 @@ const ExtratosModal = ({ open, onOpenChange }: ExtratosModalProps) => {
                             <Calendar className="w-5 h-5 text-primary" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h4 className="font-medium text-foreground mb-1">
+                            <h4 className="font-semibold text-sm sm:text-base text-foreground mb-1 break-words">
                               {formatMesAno(extrato.mes_referencia, extrato.ano_referencia)}
                             </h4>
-                            <p className="text-sm text-muted-foreground truncate">
+                            <p className="text-xs sm:text-sm text-muted-foreground break-all">
                               {extrato.nome_arquivo}
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">
@@ -201,11 +201,13 @@ const ExtratosModal = ({ open, onOpenChange }: ExtratosModalProps) => {
 
       {/* Modal para visualização do PDF */}
       <Dialog open={!!viewingPdf} onOpenChange={() => setViewingPdf(null)}>
-        <DialogContent className="max-w-6xl max-h-[90vh] p-0">
-          <DialogHeader className="p-6 pb-0">
-            <DialogTitle>{viewingFileName}</DialogTitle>
+        <DialogContent className="max-w-6xl w-full h-full sm:h-[90vh] p-0 flex flex-col gap-0 rounded-none sm:rounded-lg">
+          <DialogHeader className="p-4 sm:p-6 border-b bg-background flex-shrink-0">
+            <div className="flex items-center justify-between pr-8">
+              <DialogTitle className="text-sm sm:text-lg truncate mr-2">{viewingFileName}</DialogTitle>
+            </div>
           </DialogHeader>
-          <div className="h-[calc(90vh-100px)]">
+          <div className="flex-1 min-h-0 overflow-hidden">
             <PdfViewer file={viewingPdf} fileName={viewingFileName} />
           </div>
         </DialogContent>

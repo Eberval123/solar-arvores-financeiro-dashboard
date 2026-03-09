@@ -59,40 +59,50 @@ export function PdfViewer({ file, fileName }: PdfViewerProps) {
   return (
     <div className="flex flex-col h-full">
       {/* Barra de controles */}
-      <div className="flex items-center justify-between gap-2 p-4 border-b bg-muted/30">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={previousPage}
-            disabled={pageNumber <= 1}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <span className="text-sm font-medium min-w-[100px] text-center">
-            Página {pageNumber} de {numPages || '...'}
-          </span>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={nextPage}
-            disabled={pageNumber >= numPages}
-          >
-            <ChevronRight className="h-4 w-4" />
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-y-3 p-3 sm:p-4 border-b bg-muted/30">
+        <div className="flex items-center justify-between w-full sm:w-auto gap-2">
+          <div className="flex items-center gap-1">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8"
+              onClick={previousPage}
+              disabled={pageNumber <= 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-xs sm:text-sm font-medium min-w-[80px] sm:min-w-[100px] text-center">
+              Pág. {pageNumber} de {numPages || '...'}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8"
+              onClick={nextPage}
+              disabled={pageNumber >= numPages}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <Button variant="outline" size="sm" onClick={handleDownload} className="sm:hidden h-8">
+            <Download className="h-4 w-4" />
           </Button>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={zoomOut} disabled={scale <= 0.5}>
-            <ZoomOut className="h-4 w-4" />
-          </Button>
-          <span className="text-sm font-medium min-w-[60px] text-center">
-            {Math.round(scale * 100)}%
-          </span>
-          <Button variant="outline" size="icon" onClick={zoomIn} disabled={scale >= 3.0}>
-            <ZoomIn className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleDownload}>
+        <div className="flex items-center justify-center sm:justify-end w-full sm:w-auto gap-2">
+          <div className="flex items-center gap-1">
+            <Button variant="outline" size="icon" className="h-8 w-8" onClick={zoomOut} disabled={scale <= 0.5}>
+              <ZoomOut className="h-4 w-4" />
+            </Button>
+            <span className="text-xs sm:text-sm font-medium min-w-[50px] sm:min-w-[60px] text-center">
+              {Math.round(scale * 100)}%
+            </span>
+            <Button variant="outline" size="icon" className="h-8 w-8" onClick={zoomIn} disabled={scale >= 3.0}>
+              <ZoomIn className="h-4 w-4" />
+            </Button>
+          </div>
+          <Button variant="outline" size="sm" onClick={handleDownload} className="hidden sm:flex">
             <Download className="h-4 w-4 mr-2" />
             Baixar
           </Button>

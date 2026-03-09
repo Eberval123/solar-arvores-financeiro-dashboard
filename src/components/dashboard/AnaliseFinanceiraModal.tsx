@@ -128,8 +128,8 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
           <DialogHeader className="border-b pb-4">
             <div className="flex items-center justify-between">
               <div>
-                <DialogTitle className="text-2xl font-bold">Análises Financeiras</DialogTitle>
-                <p className="text-sm text-muted-foreground mt-1">
+                <DialogTitle className="text-xl sm:text-2xl font-bold font-montserrat">Análises Financeiras</DialogTitle>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                   Visualize e gerencie as análises financeiras do condomínio
                 </p>
               </div>
@@ -138,9 +138,10 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
                   variant="outline"
                   size="sm"
                   onClick={() => setShowUploadForm(!showUploadForm)}
+                  className="flex-shrink-0"
                 >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Nova Análise
+                  <Upload className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Nova Análise</span>
                 </Button>
               )}
             </div>
@@ -253,7 +254,7 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
 
 
 
-          <div className="space-y-4">
+          <div className="space-y-4 overflow-x-hidden">
             {isLoading ? (
               <div className="text-center py-8 text-muted-foreground">
                 Carregando análises...
@@ -274,16 +275,16 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2">
-                            <FileText className="h-5 w-5 text-primary flex-shrink-0" />
-                            <h3 className="font-semibold truncate">
+                            <FileText className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                            <h3 className="font-semibold text-sm sm:text-base break-words">
                               {analise.nome_arquivo || `Análise ${analise.periodo}`}
                             </h3>
                           </div>
 
                           <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
-                            <div className="flex items-center gap-1">
-                              <CalendarIcon className="h-4 w-4" />
-                              <span>Período: {analise.periodo}</span>
+                            <div className="flex items-center gap-1 min-w-0">
+                              <CalendarIcon className="h-4 w-4 flex-shrink-0" />
+                              <span className="truncate">Período: {analise.periodo}</span>
                             </div>
                             {analise.tamanho_arquivo && (
                               <span>Tamanho: {formatFileSize(analise.tamanho_arquivo)}</span>
@@ -335,11 +336,13 @@ const AnaliseFinanceiraModal = ({ open, onOpenChange }: AnaliseFinanceiraModalPr
 
       {/* PDF Viewer Modal */}
       <Dialog open={!!viewingPdf} onOpenChange={() => setViewingPdf(null)}>
-        <DialogContent className="max-w-6xl max-h-[90vh] p-0">
-          <DialogHeader className="p-6 pb-0">
-            <DialogTitle>{viewingFileName}</DialogTitle>
+        <DialogContent className="max-w-6xl w-full h-full sm:h-[90vh] p-0 flex flex-col gap-0 rounded-none sm:rounded-lg">
+          <DialogHeader className="p-4 sm:p-6 border-b bg-background flex-shrink-0">
+            <div className="flex items-center justify-between pr-8">
+              <DialogTitle className="text-sm sm:text-lg truncate mr-2">{viewingFileName}</DialogTitle>
+            </div>
           </DialogHeader>
-          <div className="h-[calc(90vh-100px)]">
+          <div className="flex-1 min-h-0 overflow-hidden">
             <PdfViewer file={viewingPdf} fileName={viewingFileName} />
           </div>
         </DialogContent>
